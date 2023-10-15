@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Info</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8">IP Info</h1>
+        <div class="bg-white rounded-lg shadow p-8">
+            <form id="ip-form">
+                <div class="mb-4">
+                    <label for="ip" class="block text-sm font-semibold mb-2">IP Address</label>
+                    <input type="text" id="ip" name="ip" class="w-full p-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Enter IP Address">
+                </div>
+                <button type="submit" class="w-full p-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600">Track IP</button>
+            </form>
+        </div>
+        <div id="result" class="mt-8 bg-white rounded-lg shadow p-8 hidden">
+            <h2 class="text-2xl font-bold mb-4">IP Address Information</h2>
+            <ul id="info-list" class="list-disc list-inside">
+            </ul>
+          
+        </div>
+    </div>
+    <script>
+        document.getElementById('ip-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const ip = document.getElementById('ip').value;
+            const resultDiv = document.getElementById('result');
+            const infoList = document.getElementById('info-list');
+            resultDiv.classList.add('hidden');
+            infoList.innerHTML = '';
+            try {
+                const response = await axios.get(`https://ipapi.co/${ip}/json`);
+                const data = response.data;
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        const li = document.createElement('li');
+                        li.textContent = `${key}: ${data[key]}`;
+                        infoList.appendChild(li);
+                    }
+                }
+                resultDiv.classList.remove('hidden');
+            } catch (error) {
+                alert('Invalid IP Address');
+            }
+        });
+    </script>
+</body>
+</html>
